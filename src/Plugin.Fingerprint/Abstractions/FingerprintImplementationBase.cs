@@ -8,8 +8,7 @@ namespace Plugin.Fingerprint.Abstractions
     {
         public async Task<FingerprintAuthenticationResult> AuthenticateAsync(AuthenticationRequestConfiguration authRequestConfig, CancellationToken cancellationToken = default)
         {
-            if (authRequestConfig is null)
-                throw new ArgumentNullException(nameof(authRequestConfig));
+            ArgumentNullException.ThrowIfNull(authRequestConfig);
 
             var availability = await GetAvailabilityAsync(authRequestConfig.AllowAlternativeAuthentication);
             if (availability != FingerprintAvailability.Available)

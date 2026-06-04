@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="AndroidResourceSanity.csproj">
+    <Deploy />
+  </Project>
+</Solution>

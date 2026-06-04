@@ -1,0 +1,78 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Ad-Hoc" />
+    <BuildType Name="AppStore" />
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM" />
+    <Platform Name="iPhone" />
+    <Platform Name="iPhoneSimulator" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/.doc/">
+    <File Path="../doc/changelog.md" />
+    <File Path="../README.md" />
+  </Folder>
+  <Folder Name="/Sample/">
+    <Project Path="Sample.Android/Sample.Android.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Release" />
+      <BuildType Solution="AppStore|*" Project="Release" />
+      <Deploy />
+    </Project>
+    <Project Path="Sample.iOS/Sample.iOS.csproj">
+      <Platform Solution="*|Any CPU" Project="iPhone" />
+      <Platform Solution="*|ARM" Project="iPhone" />
+      <Platform Solution="*|iPhone" Project="iPhone" />
+      <Platform Solution="*|iPhoneSimulator" Project="iPhoneSimulator" />
+      <Platform Solution="*|x64" Project="iPhone" />
+      <Platform Solution="*|x86" Project="iPhone" />
+      <Build Solution="*|Any CPU" Project="false" />
+      <Build Solution="*|ARM" Project="false" />
+      <Build Solution="*|x64" Project="false" />
+      <Build Solution="*|x86" Project="false" />
+    </Project>
+    <Project Path="Sample.UWP/Sample.UWP.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <Platform Solution="*|Any CPU" Project="x86" />
+      <Platform Solution="*|ARM" Project="ARM" />
+      <Platform Solution="*|iPhone" Project="x86" />
+      <Platform Solution="*|iPhoneSimulator" Project="x86" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+      <Build Solution="Debug|Any CPU" Project="false" />
+      <Build Solution="Debug|iPhone" Project="false" />
+      <Build Solution="Debug|iPhoneSimulator" Project="false" />
+      <Build Solution="Release|Any CPU" Project="false" />
+      <Build Solution="Release|iPhone" Project="false" />
+      <Build Solution="Release|iPhoneSimulator" Project="false" />
+      <Deploy Solution="*|ARM" />
+      <Deploy Solution="*|x64" />
+      <Deploy Solution="*|x86" />
+      <Deploy Solution="Ad-Hoc|Any CPU" />
+      <Deploy Solution="Ad-Hoc|iPhone" />
+      <Deploy Solution="Ad-Hoc|iPhoneSimulator" />
+      <Deploy Solution="AppStore|Any CPU" />
+      <Deploy Solution="AppStore|iPhone" />
+      <Deploy Solution="AppStore|iPhoneSimulator" />
+    </Project>
+    <Project Path="Sample/Sample.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.build.props" />
+    <File Path="global.json" />
+  </Folder>
+  <Project Path="MvvmCross.Plugins.Fingerprint/MvvmCross.Plugins.Fingerprint.csproj">
+    <BuildType Solution="Ad-Hoc|*" Project="Release" />
+    <BuildType Solution="AppStore|*" Project="Release" />
+  </Project>
+  <Project Path="Plugin.Fingerprint/Plugin.Fingerprint.csproj">
+    <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+    <BuildType Solution="AppStore|*" Project="Debug" />
+  </Project>
+</Solution>

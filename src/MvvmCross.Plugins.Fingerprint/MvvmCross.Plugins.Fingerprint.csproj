@@ -1,19 +1,68 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461;Xamarin.Mac20;Xamarin.iOS10;Xamarin.TVOS10;Xamarin.WatchOS10;MonoAndroid9;uap10.0.19041;Tizen40;</TargetFrameworks>
+    <TargetFrameworks>net11.0-android</TargetFrameworks>
+    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net11.0-ios;net11.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
+
     <LangVersion>latest</LangVersion>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
     <AssemblyName>MvvmCross.Plugins.Fingerprint</AssemblyName>
     <RootNamespace>MvvmCross.Plugins.Fingerprint</RootNamespace>
     <Title>Fingerprint / Face ID / Biometric Plugin for MvvmCross</Title>
+
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">17.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net11.0-android|AnyCPU'">
+    <IsAotCompatible>True</IsAotCompatible>
+    <RunAOTCompilation>True</RunAOTCompilation>
+    <AndroidEnableProfiledAot>True</AndroidEnableProfiledAot>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net11.0-ios|AnyCPU'">
+    <IsAotCompatible>True</IsAotCompatible>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net11.0-maccatalyst|AnyCPU'">
+    <IsAotCompatible>True</IsAotCompatible>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net11.0-windows10.0.19041.0|AnyCPU'">
+    <IsAotCompatible>True</IsAotCompatible>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net11.0-android|AnyCPU'">
+    <IsAotCompatible>True</IsAotCompatible>
+    <RunAOTCompilation>True</RunAOTCompilation>
+    <AndroidEnableProfiledAot>True</AndroidEnableProfiledAot>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net11.0-ios|AnyCPU'">
+    <IsAotCompatible>True</IsAotCompatible>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net11.0-maccatalyst|AnyCPU'">
+    <IsAotCompatible>True</IsAotCompatible>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net11.0-windows10.0.19041.0|AnyCPU'">
+    <IsAotCompatible>True</IsAotCompatible>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Plugin.Fingerprint\Plugin.Fingerprint.csproj">
-      <Project>{e519a552-0a87-4e3c-965a-721426e32637}</Project>
-      <Name>Plugin.Fingerprint</Name>
-    </ProjectReference>
-    <PackageReference Include="MvvmCross" Version="6.0.0" />
-    <None Include="readme.txt" pack="true" PackagePath="." />
+    <ProjectReference Include="..\Plugin.Fingerprint\Plugin.Fingerprint.csproj" />
+    <PackageReference Include="MvvmCross" Version="10.1.29-alpha-ga4709510c9" />
+	  <None Include="readme.txt" Pack="true" PackagePath="." />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="11.0.100-preview.4.26230.115" />
   </ItemGroup>
 </Project>

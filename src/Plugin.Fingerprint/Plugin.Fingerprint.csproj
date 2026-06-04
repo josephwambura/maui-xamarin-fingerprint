@@ -1,63 +1,103 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45;Xamarin.Mac20;Xamarin.iOS10;Xamarin.TVOS10;Xamarin.WatchOS10;MonoAndroid90;uap10.0.19041;Tizen40;</TargetFrameworks>
-    <LangVersion>8</LangVersion>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <Title>Fingerprint / Face ID / Biometric Plugin for Xamarin</Title>
-    <AssemblyName>Plugin.Fingerprint</AssemblyName>
-    <RootNamespace>Plugin.Fingerprint</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net11.0-android</TargetFrameworks>
+		<TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net11.0-ios;net11.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
 
-  <ItemGroup>
-    <Compile Include="Abstractions\*.cs" />
-    <Compile Include="*.cs" />
-    <None Include="readme.txt" pack="true" PackagePath="." />
-  </ItemGroup>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
 
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
-    <Compile Include="netstandard\*.cs" />
-  </ItemGroup>
+		<Title>Fingerprint / Face ID / Biometric Plugin for MAUI</Title>
+		<AssemblyName>Plugin.Fingerprint</AssemblyName>
+		<RootNamespace>Plugin.Fingerprint</RootNamespace>
 
-  <!-- iOS -->
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
-    <Compile Include="Platforms\Apple\**\*.cs" />
-  </ItemGroup>
+		<!-- Aligned with the MAUI project's SupportedOSPlatformVersion values -->
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">17.0</SupportedOSPlatformVersion>
+		<!-- BiometricPrompt requires API 24 (Android 7.0); matches MAUI project -->
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
+		<!-- Matches MAUI project: min + target both pinned to 17763 -->
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+	</PropertyGroup>
 
-  <PropertyGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
-    <DefineConstants>$(DefineConstants);IOS;</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net11.0-android|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	  <RunAOTCompilation>True</RunAOTCompilation>
+	  <AndroidEnableProfiledAot>True</AndroidEnableProfiledAot>
+	</PropertyGroup>
 
-  <!-- macOS -->
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.Mac')) ">
-    <Compile Include="Platforms\Apple\**\*.cs" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net11.0-ios|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	</PropertyGroup>
 
-  <PropertyGroup Condition=" $(TargetFramework.StartsWith('Xamarin.Mac')) ">
-    <DefineConstants>$(DefineConstants);MACOS;</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net11.0-maccatalyst|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	</PropertyGroup>
 
-  <!-- Android -->
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
-    <Compile Include="Platforms\Android\**\*.cs" />
-    <PackageReference Include="Xamarin.AndroidX.Biometric" Version="1.1.0" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net11.0-windows10.0.19041.0|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	</PropertyGroup>
 
-  <PropertyGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
-    <DefineConstants>$(DefineConstants);ANDROID;</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net11.0-android|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	  <RunAOTCompilation>True</RunAOTCompilation>
+	  <AndroidEnableProfiledAot>True</AndroidEnableProfiledAot>
+	</PropertyGroup>
 
-  <!-- UWP -->
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('uap10.0')) ">
-    <Compile Include="Platforms\UWP\**\*.cs" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net11.0-ios|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	</PropertyGroup>
 
-  <PropertyGroup Condition=" $(TargetFramework.StartsWith('uap10.0')) ">
-    <!--<TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>-->
-    <DefineConstants>$(DefineConstants);WINDOWS_UWP;</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net11.0-maccatalyst|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	</PropertyGroup>
 
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) OR $(TargetFramework.StartsWith('Xamarin.TVOS')) OR $(TargetFramework.StartsWith('Xamarin.WatchOS')) OR $(TargetFramework.StartsWith('Tizen')) ">
-    <Compile Include="Platforms\NotImplemented\**\*.cs" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net11.0-windows10.0.19041.0|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="readme.txt" Pack="true" PackagePath="." />
+	</ItemGroup>
+
+	<!-- ── Platform-specific source files ──────────────────────────────────────
+       The SDK already globs all *.cs by default. We only need to REMOVE the
+       folders that do not belong on each platform — no explicit Include needed.
+  -->
+
+	<!-- MacCatalyst: remove iOS, Android, Windows, NotImplemented -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+		<Compile Remove="Platforms\iOS\**\*.cs" />
+		<Compile Remove="Platforms\Android\**\*.cs" />
+		<Compile Remove="Platforms\Windows\**\*.cs" />
+		<Compile Remove="Platforms\NotImplemented\**\*.cs" />
+	</ItemGroup>
+
+	<!-- iOS: remove MacCatalyst, Android, Windows, NotImplemented -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<Compile Remove="Platforms\MacCatalyst\**\*.cs" />
+		<Compile Remove="Platforms\Android\**\*.cs" />
+		<Compile Remove="Platforms\Windows\**\*.cs" />
+		<Compile Remove="Platforms\NotImplemented\**\*.cs" />
+	</ItemGroup>
+
+	<!-- Android: remove MacCatalyst, iOS, Windows, NotImplemented -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<Compile Remove="Platforms\MacCatalyst\**\*.cs" />
+		<Compile Remove="Platforms\iOS\**\*.cs" />
+		<Compile Remove="Platforms\Windows\**\*.cs" />
+		<Compile Remove="Platforms\NotImplemented\**\*.cs" />
+		<PackageReference Include="Xamarin.AndroidX.Biometric" Version="1.1.0.32" />
+	</ItemGroup>
+
+	<!-- Windows: remove MacCatalyst, iOS, Android, NotImplemented -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<Compile Remove="Platforms\MacCatalyst\**\*.cs" />
+		<Compile Remove="Platforms\iOS\**\*.cs" />
+		<Compile Remove="Platforms\Android\**\*.cs" />
+		<Compile Remove="Platforms\NotImplemented\**\*.cs" />
+	</ItemGroup>
 </Project>

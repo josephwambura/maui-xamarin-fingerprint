@@ -3,27 +3,27 @@
     /// <summary>
     /// Configuration of the stuff presented to the user.
     /// </summary>
-    public class AuthenticationRequestConfiguration
+    public class AuthenticationRequestConfiguration(string title, string reason)
     {
         /// <summary>
         /// Title of the authentication request.
         /// </summary>
-        public string Title { get; }
+        public string Title { get; } = title;
 
         /// <summary>
         /// Reason of the authentication request.
         /// </summary>
-        public string Reason { get; }
+        public string Reason { get; } = reason;
 
         /// <summary>
         /// Title of the cancel button.
         /// </summary>
-        public string CancelTitle { get; set; }
+        public string? CancelTitle { get; set; }
 
         /// <summary>
         /// Title of the fallback button.
         /// </summary>
-        public string FallbackTitle { get; set; }
+        public string? FallbackTitle { get; set; }
 
         /// <summary>
         /// Shown when a recoverable error has been encountered during authentication. 
@@ -32,7 +32,7 @@
         /// 
         /// Supported Platforms: Android
         /// </summary>
-        public AuthenticationHelpTexts HelpTexts { get; }
+        public AuthenticationHelpTexts HelpTexts { get; } = new AuthenticationHelpTexts();
 
         /// <summary>
         /// En-/Disables the use of the PIN / Password as fallback.
@@ -51,13 +51,6 @@
         /// Default: true
         /// </summary>
         public bool ConfirmationRequired { get; set; } = true;
-
-        public AuthenticationRequestConfiguration(string title, string reason)
-        {
-            Reason = reason;
-            Title = title;
-            HelpTexts = new AuthenticationHelpTexts();
-        }
     }
 
     public class AuthenticationHelpTexts
@@ -65,26 +58,26 @@
         /// <summary>
         /// The fingerprint image was incomplete due to quick motion.
         /// </summary>
-        public string MovedTooFast { get; set; }
+        public string? MovedTooFast { get; set; }
 
         /// <summary>
         /// The fingerprint image was unreadable due to lack of motion.
         /// </summary>
-        public string MovedTooSlow { get; set; }
+        public string? MovedTooSlow { get; set; }
 
         /// <summary>
         /// Only a partial fingerprint image was detected.
         /// </summary>
-        public string Partial { get; set; }
+        public string? Partial { get; set; }
 
         /// <summary>
         /// The fingerprint image was too noisy to process due to a detected condition.
         /// </summary>
-        public string Insufficient { get; set; }
+        public string? Insufficient { get; set; }
 
         /// <summary>
         /// The fingerprint image was too noisy due to suspected or detected dirt on the sensor.
         /// </summary>
-        public string Dirty { get; set; }
+        public string? Dirty { get; set; }
     }
 }

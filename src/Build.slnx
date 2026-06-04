@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="MvvmCross.Plugins.Fingerprint/MvvmCross.Plugins.Fingerprint.csproj" />
+  <Project Path="Plugin.Fingerprint/Plugin.Fingerprint.csproj" />
+</Solution>

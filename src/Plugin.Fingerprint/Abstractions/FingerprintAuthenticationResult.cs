@@ -15,6 +15,6 @@
         /// <summary>
         /// Reason for the unsucessful authentication.
         /// </summary>
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
     }
 }

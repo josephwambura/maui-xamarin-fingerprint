@@ -5,7 +5,7 @@ using Foundation;
 using LocalAuthentication;
 using ObjCRuntime;
 using Plugin.Fingerprint.Abstractions;
-#if IOS
+#if IOS || MACCATALYST
 using UIKit;
 #endif
 
@@ -13,19 +13,21 @@ namespace Plugin.Fingerprint
 {
     internal class FingerprintImplementation : FingerprintImplementationBase
     {
-        private LAContext _context;
+        private LAContext? _context;
 
         public FingerprintImplementation()
         {
             CreateLaContext();
         }
 
-        protected override async Task<FingerprintAuthenticationResult> NativeAuthenticateAsync(AuthenticationRequestConfiguration authRequestConfig, CancellationToken cancellationToken)
+        protected override async Task<FingerprintAuthenticationResult> NativeAuthenticateAsync(
+            AuthenticationRequestConfiguration authRequestConfig,
+            CancellationToken cancellationToken)
         {
             var result = new FingerprintAuthenticationResult();
             SetupContextProperties(authRequestConfig);
 
-            Tuple<bool, NSError> resTuple;
+            Tuple<bool, NSError?> resTuple;
             using (cancellationToken.Register(CancelAuthentication))
             {
                 var policy = GetPolicy(authRequestConfig.AllowAlternativeAuthentication);
@@ -63,19 +65,15 @@ namespace Plugin.Fingerprint
             if (_context.CanEvaluatePolicy(policy, out var error))
                 return FingerprintAvailability.Available;
 
-            switch ((LAStatus)(int)error.Code)
+            return (LAStatus)(int)error.Code switch
             {
-                case LAStatus.BiometryNotAvailable:
-                    return IsDeniedError(error) ? 
-                        FingerprintAvailability.Denied :
-                        FingerprintAvailability.NoSensor;
-                case LAStatus.BiometryNotEnrolled:
-                    return FingerprintAvailability.NoFingerprint;
-                case LAStatus.PasscodeNotSet:
-                    return FingerprintAvailability.NoFallback;
-                default:
-                    return FingerprintAvailability.Unknown;
-            }
+                LAStatus.BiometryNotAvailable => IsDeniedError(error)
+                    ? FingerprintAvailability.Denied
+                    : FingerprintAvailability.NoSensor,
+                LAStatus.BiometryNotEnrolled => FingerprintAvailability.NoFingerprint,
+                LAStatus.PasscodeNotSet => FingerprintAvailability.NoFallback,
+                _ => FingerprintAvailability.Unknown,
+            };
         }
 
         public override async Task<AuthenticationType> GetAuthenticationTypeAsync()
@@ -83,29 +81,25 @@ namespace Plugin.Fingerprint
             if (_context == null)
                 return AuthenticationType.None;
 
-            // we need to call this, because it will always return none, if you don't call CanEvaluatePolicy
+            // Must call GetAvailabilityAsync first — BiometryType is not populated otherwise
             var availability = await GetAvailabilityAsync(false);
 
-            // iOS 11+
+            // iOS/MacCatalyst 11+ — switch directly on LABiometryType, no object cast needed
             if (_context.RespondsToSelector(new Selector("biometryType")))
             {
-                switch (_context.BiometryType)
+                return _context.BiometryType switch
                 {
-                    case LABiometryType.None:
-                        return AuthenticationType.None;
-                    case LABiometryType.TouchId:
-                        return AuthenticationType.Fingerprint;
-                    case LABiometryType.FaceId:
-                        return AuthenticationType.Face;
-                    default:
-                        return AuthenticationType.None;
-                }
+                    LABiometryType.None => AuthenticationType.None,
+                    LABiometryType.TouchId => AuthenticationType.Fingerprint,
+                    LABiometryType.FaceId => AuthenticationType.Face,
+                    _ => AuthenticationType.None,
+                };
             }
 
-            // iOS < 11
-            if (availability == FingerprintAvailability.NoApi ||
-                availability == FingerprintAvailability.NoSensor || 
-                availability == FingerprintAvailability.Unknown)
+            // Fallback for older OS versions
+            if (availability is FingerprintAvailability.NoApi
+                             or FingerprintAvailability.NoSensor
+                             or FingerprintAvailability.Unknown)
             {
                 return AuthenticationType.None;
             }
@@ -116,24 +110,20 @@ namespace Plugin.Fingerprint
         private void SetupContextProperties(AuthenticationRequestConfiguration authRequestConfig)
         {
             if (_context.RespondsToSelector(new Selector("localizedFallbackTitle")))
-            {
                 _context.LocalizedFallbackTitle = authRequestConfig.FallbackTitle;
-            }
 
             if (_context.RespondsToSelector(new Selector("localizedCancelTitle")))
-            {
                 _context.LocalizedCancelTitle = authRequestConfig.CancelTitle;
-            }
         }
 
-        private LAPolicy GetPolicy(bool allowAlternativeAuthentication)
+        private static LAPolicy GetPolicy(bool allowAlternativeAuthentication)
         {
-            return allowAlternativeAuthentication ?
-                LAPolicy.DeviceOwnerAuthentication :
-                LAPolicy.DeviceOwnerAuthenticationWithBiometrics;
+            return allowAlternativeAuthentication
+                ? LAPolicy.DeviceOwnerAuthentication
+                : LAPolicy.DeviceOwnerAuthenticationWithBiometrics;
         }
 
-        private FingerprintAuthenticationResult GetResultFromError(NSError error)
+        private static FingerprintAuthenticationResult GetResultFromError(NSError error)
         {
             var result = new FingerprintAuthenticationResult();
 
@@ -141,14 +131,9 @@ namespace Plugin.Fingerprint
             {
                 case LAStatus.AuthenticationFailed:
                     var description = error.Description;
-                    if (description != null && description.Contains("retry limit exceeded"))
-                    {
-                        result.Status = FingerprintAuthenticationResultStatus.TooManyAttempts;
-                    }
-                    else
-                    {
-                        result.Status = FingerprintAuthenticationResultStatus.Failed;
-                    }
+                    result.Status = description != null && description.Contains("retry limit exceeded")
+                        ? FingerprintAuthenticationResultStatus.TooManyAttempts
+                        : FingerprintAuthenticationResultStatus.Failed;
                     break;
 
                 case LAStatus.UserCancel:
@@ -160,15 +145,14 @@ namespace Plugin.Fingerprint
                     result.Status = FingerprintAuthenticationResultStatus.FallbackRequested;
                     break;
 
-                case LAStatus.TouchIDLockout:
+                case LAStatus.BiometryLockout:
                     result.Status = FingerprintAuthenticationResultStatus.TooManyAttempts;
                     break;
 
                 case LAStatus.BiometryNotAvailable:
-                    // this can happen if it was available, but the user didn't allow face ID
-                    result.Status = IsDeniedError(error) ? 
-                        FingerprintAuthenticationResultStatus.Denied : 
-                        FingerprintAuthenticationResultStatus.NotAvailable;
+                    result.Status = IsDeniedError(error)
+                        ? FingerprintAuthenticationResultStatus.Denied
+                        : FingerprintAuthenticationResultStatus.NotAvailable;
                     break;
 
                 default:
@@ -177,23 +161,18 @@ namespace Plugin.Fingerprint
             }
 
             result.ErrorMessage = error.LocalizedDescription;
-
             return result;
         }
 
-        private void CancelAuthentication()
-        {
-            CreateNewContext();
-        }
+        private void CancelAuthentication() => CreateNewContext();
 
         private void CreateNewContext()
         {
             if (_context != null)
             {
                 if (_context.RespondsToSelector(new Selector("invalidate")))
-                {
                     _context.Invalidate();
-                }
+
                 _context.Dispose();
             }
 
@@ -203,30 +182,29 @@ namespace Plugin.Fingerprint
         private void CreateLaContext()
         {
             var info = new NSProcessInfo();
-#if MACOS
+
+#if MACCATALYST
+            // Was #if MACOS — corrected to MACCATALYST to match the net11.0-maccatalyst TFM
             var minVersion = new NSOperatingSystemVersion(10, 12, 0);
             if (!info.IsOperatingSystemAtLeastVersion(minVersion))
                 return;
 #else
+            // SupportedOSPlatformVersion is 15.0, so CheckSystemVersion(8,0) is always
+            // true at runtime — kept for clarity but could be removed.
             if (!UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
                 return;
 #endif
-            // Check LAContext is not available on iOS7 and below, so check LAContext after checking iOS version.
+
             if (Class.GetHandle(typeof(LAContext)) == IntPtr.Zero)
                 return;
 
             _context = new LAContext();
         }
 
-        private bool IsDeniedError(NSError error)
+        private static bool IsDeniedError(NSError error)
         {
-            if (!string.IsNullOrEmpty(error.Description))
-            {
-                // we might have some issues, if the error gets localized :/
-                return error.Description.ToLower().Contains("denied");
-            }
-
-            return false;
+            return !string.IsNullOrEmpty(error.Description) &&
+                   error.Description.Contains("denied", StringComparison.CurrentCultureIgnoreCase);
         }
     }
 }

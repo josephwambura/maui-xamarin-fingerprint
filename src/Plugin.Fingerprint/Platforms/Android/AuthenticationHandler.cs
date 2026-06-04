@@ -58,7 +58,7 @@ namespace Plugin.Fingerprint
             base.OnAuthenticationFailed();
         }
 
-        public void OnClick(IDialogInterface dialog, int which)
+        public void OnClick(IDialogInterface? dialog, int which)
         {
             var faResult = new FingerprintAuthenticationResult { Status = FingerprintAuthenticationResultStatus.Canceled };
             SetResultSafe(faResult);

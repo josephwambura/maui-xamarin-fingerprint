@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+
 using Plugin.Fingerprint.Abstractions;
 #if ANDROID
 using Plugin.Fingerprint.Contract;
@@ -28,11 +29,10 @@ namespace Plugin.Fingerprint
 
         static IFingerprint CreateFingerprint()
         {
-#if NETSTANDARD2_0
-            throw NotImplementedInReferenceAssembly();
-#else
+            // All four supported TFMs (Android, iOS, MacCatalyst, Windows) have a
+            // concrete FingerprintImplementation. The old NETSTANDARD2_0 guard was
+            // for the reference-assembly fallback TFM which no longer exists.
             return new FingerprintImplementation();
-#endif
         }
 
         /// <summary>
@@ -44,11 +44,6 @@ namespace Plugin.Fingerprint
             {
                 _implementation = new Lazy<IFingerprint>(CreateFingerprint, LazyThreadSafetyMode.PublicationOnly);
             }
-        }
-
-        private static Exception NotImplementedInReferenceAssembly()
-        {
-            return new NotImplementedException("This functionality is not implemented in the portable version of this assembly. You should reference the NuGet package from your main application project in order to reference the platform-specific implementation.");
         }
     }
 }
