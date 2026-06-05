@@ -1,8 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<TargetFrameworks>net10.0-android</TargetFrameworks>
 		<TargetFrameworks>net11.0-android</TargetFrameworks>
+		<TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net11.0-ios;net11.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
 
 		<LangVersion>latest</LangVersion>
@@ -29,44 +32,80 @@
 		<PackageTags>mvvmcross;mvvm;MAUI;fingerprint;authenticate;touchid;biometric;windows;uwp;face id;unlock</PackageTags>
 		<PackageReleaseNotes>https://github.com/josephwambura/maui-xamarin-fingerprint/blob/master/doc/changelog.md</PackageReleaseNotes>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-		<Version>1.0.0</Version>
+		<Version>2.0.1</Version>
 		<PackageReadmeFile>NUGET_README.md</PackageReadmeFile>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net11.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
 	  <IsAotCompatible>True</IsAotCompatible>
 	  <RunAOTCompilation>True</RunAOTCompilation>
 	  <AndroidEnableProfiledAot>True</AndroidEnableProfiledAot>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-ios|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-maccatalyst|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-windows10.0.19041.0|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	  <RunAOTCompilation>True</RunAOTCompilation>
+	  <AndroidEnableProfiledAot>True</AndroidEnableProfiledAot>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-ios|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-maccatalyst|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-windows10.0.19041.0|AnyCPU'">
+	  <IsAotCompatible>True</IsAotCompatible>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net11.0-android|AnyCPU'">
+		<IsAotCompatible>True</IsAotCompatible>
+		<RunAOTCompilation>True</RunAOTCompilation>
+		<AndroidEnableProfiledAot>True</AndroidEnableProfiledAot>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net11.0-ios|AnyCPU'">
-	  <IsAotCompatible>True</IsAotCompatible>
+		<IsAotCompatible>True</IsAotCompatible>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net11.0-maccatalyst|AnyCPU'">
-	  <IsAotCompatible>True</IsAotCompatible>
+		<IsAotCompatible>True</IsAotCompatible>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net11.0-windows10.0.19041.0|AnyCPU'">
-	  <IsAotCompatible>True</IsAotCompatible>
+		<IsAotCompatible>True</IsAotCompatible>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net11.0-android|AnyCPU'">
-	  <IsAotCompatible>True</IsAotCompatible>
-	  <RunAOTCompilation>True</RunAOTCompilation>
-	  <AndroidEnableProfiledAot>True</AndroidEnableProfiledAot>
+		<IsAotCompatible>True</IsAotCompatible>
+		<RunAOTCompilation>True</RunAOTCompilation>
+		<AndroidEnableProfiledAot>True</AndroidEnableProfiledAot>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net11.0-ios|AnyCPU'">
-	  <IsAotCompatible>True</IsAotCompatible>
+		<IsAotCompatible>True</IsAotCompatible>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net11.0-maccatalyst|AnyCPU'">
-	  <IsAotCompatible>True</IsAotCompatible>
+		<IsAotCompatible>True</IsAotCompatible>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net11.0-windows10.0.19041.0|AnyCPU'">
-	  <IsAotCompatible>True</IsAotCompatible>
+		<IsAotCompatible>True</IsAotCompatible>
 	</PropertyGroup>
 
 	<ItemGroup>
