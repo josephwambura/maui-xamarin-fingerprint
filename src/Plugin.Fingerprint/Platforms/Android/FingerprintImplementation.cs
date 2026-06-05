@@ -66,6 +66,9 @@ namespace Plugin.Fingerprint
 
         private FingerprintAvailability GetBiometricAvailability()
         {
+            if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.M)
+                return FingerprintAvailability.NoApi;
+
             var context = Application.Context;
 
             if (context.CheckCallingOrSelfPermission(Manifest.Permission.UseBiometric) != Permission.Granted &&

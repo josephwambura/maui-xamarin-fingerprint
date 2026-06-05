@@ -10,7 +10,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<Title>Fingerprint / Face ID / Biometric Plugin for MAUI</Title>
-		<AssemblyName>Plugin.Fingerprint</AssemblyName>
+		<AssemblyName>Plugin.Fingerprint.MAUI</AssemblyName>
 		<RootNamespace>Plugin.Fingerprint</RootNamespace>
 
 		<!-- Aligned with the MAUI project's SupportedOSPlatformVersion values -->
@@ -21,6 +21,16 @@
 		<!-- Matches MAUI project: min + target both pinned to 17763 -->
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Authors>Sven-Michael Stübe, Joseph Wambura</Authors>
+		<Copyright>Copyright (c) Sven-Michael Stübe, Joseph Wambura</Copyright>
+		<PackageProjectUrl>https://github.com/josephwambura/maui-xamarin-fingerprint</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/josephwambura/maui-xamarin-fingerprint</RepositoryUrl>
+		<PackageTags>mvvmcross;mvvm;MAUI;fingerprint;authenticate;touchid;biometric;windows;uwp;face id;unlock</PackageTags>
+		<PackageReleaseNotes>https://github.com/josephwambura/maui-xamarin-fingerprint/blob/master/doc/changelog.md</PackageReleaseNotes>
+		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+		<Version>1.0.0</Version>
+		<PackageReadmeFile>NUGET_README.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net11.0-android|AnyCPU'">
@@ -60,6 +70,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="..\..\NUGET_README.md" Pack="true" PackagePath="\"/>
 		<None Include="readme.txt" Pack="true" PackagePath="." />
 	</ItemGroup>
 
