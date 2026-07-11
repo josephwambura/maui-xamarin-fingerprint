@@ -46,7 +46,6 @@ namespace Plugin.Fingerprint
             if (Build.VERSION.SdkInt < BuildVersionCodes.M)
                 return FingerprintAvailability.NoApi;
 
-
             var biometricAvailability = GetBiometricAvailability();
             if (biometricAvailability == FingerprintAvailability.Available || !allowAlternativeAuthentication)
                 return biometricAvailability;
@@ -126,7 +125,6 @@ namespace Plugin.Fingerprint
                 }
                 var info = builder.Build();
                 var executor = Executors.NewSingleThreadExecutor();
-
 
                 var activity = (FragmentActivity)CrossFingerprint.CurrentActivity;
                 using var dialog = new BiometricPrompt(activity, executor, handler);
