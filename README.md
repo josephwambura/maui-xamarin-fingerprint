@@ -210,6 +210,7 @@ You can't use the alternative authentication method.
 ### iOS
 
 ![Controlling the sensor on the iOS Simulator](doc/ios_simulator.png "Controlling the sensor on the iOS Simulator")
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjosephwambura%2Fmaui-xamarin-fingerprint.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjosephwambura%2Fmaui-xamarin-fingerprint?ref=badge_shield)
 
 With the Hardware menu you can
 
@@ -251,3 +252,7 @@ If you use the plugin with Link all, Release Mode and ProGuard/r8 enabled, you m
 ## Contribution
 
 <img src="http://i.imgur.com/WFBeQuG.png" /> + <img src="http://i.imgur.com/P4Ay9tm.png" />
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjosephwambura%2Fmaui-xamarin-fingerprint.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjosephwambura%2Fmaui-xamarin-fingerprint?ref=badge_large)
